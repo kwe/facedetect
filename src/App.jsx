@@ -9,31 +9,38 @@ function App() {
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
-      console.log(imageSrc);
+    console.log(imageSrc);
   }; // const capture = () => {
 
   const runFaceDetection = async () => {
     const model = await blazeface.load();
     setInterval(() => {
-      detect(model)
+      detect(model);
     }, 10);
-  }
+  };
 
-  const detect = async(model) => {
+  const detect = async (model) => {
+    if (
+      typeof webcamRef.current !== 'undefined' &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
+    ) {
+      const video = webcamRef.current.video;
+      const videoWidth = webcamRef.current.video.videoWidth;
+      const videoHeight = webcamRef.current.video.videoHeight;
 
-   if (
-     typeof webcamRef.current !== 'undefined' &&
-     webcamRef.current !== null &&
-     webcamRef.current.video.readyState === 4
-   ) {
-     console.log("Video is ready");
-    //  const predictions = await model.estimateFaces(image);
-    //  console.log(predictions);
-   }
-  }
+      // Set video width
+      webcamRef.current.video.width = videoWidth;
+      webcamRef.current.video.height = videoHeight;
 
+       const predictions = await model.estimateFaces(video);
+       console.log(predictions);
+    }
+  };
 
-  useEffect(()=>{runFaceDetection()}, []);
+  useEffect(() => {
+    runFaceDetection();
+  }, []);
 
   return (
     <div className="App">
