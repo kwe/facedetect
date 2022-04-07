@@ -1,11 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './App.css';
 import * as tf from '@tensorflow/tfjs';
 import Webcam from 'react-webcam';
 import * as blazeface from '@tensorflow-models/blazeface';
 
 function App() {
-  const webcamRef = useRef(null);
+  const webcamRef = useRef(null)
+  const canvasRef = useRef(null)
+  const [faces, setFaces] = useState(0)
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -33,8 +35,9 @@ function App() {
       webcamRef.current.video.width = videoWidth;
       webcamRef.current.video.height = videoHeight;
 
-       const predictions = await model.estimateFaces(video);
-       console.log(predictions);
+      const predictions = await model.estimateFaces(video);
+      console.log(predictions);
+      setFaces(predictions.length);
     }
   };
 
@@ -44,17 +47,39 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Let's find some face(s)</h1>
+      <h1>Found {faces}</h1>
       <header className="App-header">
         <Webcam
           ref={webcamRef}
-          audio={false}
-          height={480}
-          width={640}
-          screenshotFormat="image/jpeg"
+          style={{
+            position: 'absolute',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            left: 0,
+            right: 0,
+            textAlign: 'center',
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
         />
-        <button onClick={capture}>Capture photo</button>
+
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'absolute',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            left: 0,
+            right: 0,
+            textAlign: 'center',
+            zindex: 9,
+            width: 640,
+            height: 480,
+          }}
+        />
       </header>
+      <button onClick={capture}>Capture photo</button>
     </div>
   );
 }
