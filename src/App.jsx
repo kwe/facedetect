@@ -5,9 +5,9 @@ import Webcam from 'react-webcam';
 import * as blazeface from '@tensorflow-models/blazeface';
 
 function App() {
-  const webcamRef = useRef(null)
-  const canvasRef = useRef(null)
-  const [faces, setFaces] = useState(0)
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [faces, setFaces] = useState(0);
 
   const capture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -38,6 +38,15 @@ function App() {
       const predictions = await model.estimateFaces(video);
       console.log(predictions);
       setFaces(predictions.length);
+
+      //TODO: figure out drawing around face etc.
+      // const ctx = canvasRef.current.getContext('2d');
+      // for (let i = 0; i < predictions.length; i++) {
+      //   const start = predictions[i].topLeft;
+      //   const end = predictions[i].bottomRight;
+      //   const size = [end[0] - start[0], end[1] - start[1]];
+      //   ctx.fillRect(start[0], start[1], size[0], size[1]);
+      // }
     }
   };
 
@@ -79,6 +88,7 @@ function App() {
           }}
         />
       </header>
+      // TODO: Make the button only appear if there is a face found.
       <button onClick={capture}>Capture photo</button>
     </div>
   );
