@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './App.css';
 import * as tf from '@tensorflow/tfjs';
 import Webcam from 'react-webcam';
@@ -14,8 +14,26 @@ function App() {
 
   const runFaceDetection = async () => {
     const model = await blazeface.load();
+    setInterval(() => {
+      detect(model)
+    }, 10);
   }
 
+  const detect = async(model) => {
+
+   if (
+     typeof webcamRef.current !== 'undefined' &&
+     webcamRef.current !== null &&
+     webcamRef.current.video.readyState === 4
+   ) {
+     console.log("Video is ready");
+    //  const predictions = await model.estimateFaces(image);
+    //  console.log(predictions);
+   }
+  }
+
+
+  useEffect(()=>{runFaceDetection()}, []);
 
   return (
     <div className="App">
